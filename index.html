@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penda's Lofi Schedule ♡</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            min-height: 100vh;
+            color: #4f4650;
+            background:
+                linear-gradient(rgba(255, 246, 238, 0.78), rgba(245, 238, 255, 0.88)),
+                radial-gradient(circle at top left, #ffd9e8, transparent 35%),
+                radial-gradient(circle at bottom right, #dcd7ff, transparent 35%);
+            padding: 30px 15px;
+        }
+
+        .app {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: clamp(28px, 5vw, 46px);
+            color: #65536b;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #8d7d8e;
+            font-size: 15px;
+        }
+
+        /* Penda */
+        .penda-card {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 10px 30px rgba(110, 90, 110, 0.12);
+            backdrop-filter: blur(10px);
+        }
+
+        .penda {
+            width: 90px;
+            height: 90px;
+            min-width: 90px;
+            border-radius: 50%;
+            background: #f8c9d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            box-shadow: inset 0 -7px rgba(180, 120, 145, 0.12);
+            transition: 0.3s;
+        }
+
+        .penda.happy {
+            animation: happy 0.6s ease;
+        }
+
+        @keyframes happy {
+            0% {
+                transform: scale(1) rotate(0);
+            }
+
+            30% {
+                transform: scale(1.2) rotate(-8deg);
+            }
+
+            60% {
+                transform: scale(1.2) rotate(8deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .message h2 {
+            color: #65536b;
+            margin-bottom: 5px;
+        }
+
+        .message p {
+            color: #8c7e8d;
+        }
+
+        /* Days */
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .day-btn {
+            border: none;
+            padding: 13px 5px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.65);
+            color: #746475;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .day-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .day-btn.active {
+            background: #cda9d8;
+            color: white;
+            box-shadow: 0 6px 15px rgba(160, 120, 170, 0.25);
+        }
+
+        /* Progress */
+        .progress-card {
+            background: rgba(255, 255, 255, 0.72);
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(110, 90, 110, 0.1);
+        }
+
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #eee3ed;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #e9a9c6, #bda8df);
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
+        /* Schedule */
+        .schedule {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .task {
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 7px 22px rgba(100, 80, 100, 0.08);
+            transition: 0.25s;
+            border: 2px solid transparent;
+        }
+
+        .task:hover {
+            transform: translateY(-2px);
+        }
+
+        .task.completed {
+            opacity: 0.65;
+            background: rgba(238, 230, 240, 0.7);
+        }
+
+        .task.completed .task-name {
+            text-decoration: line-through;
+        }
+
+        .time {
+            width: 105px;
+            min-width: 105px;
+            font-weight: 700;
+            color: #98779d;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-name {
+
+            font-size: 17px;
+            font-weight: 700;
+            color: #5d5260;
+            margin-bottom: 4px;
+        }
+
+        .task-description {
+            font-size: 13px;
+            color: #958896;
+        }
+
+        .complete-btn {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 13px;
+            background: #e6c4dc;
+            color: #66546a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .complete-btn:hover {
+            transform: scale(1.05);
+            background: #d9afd2;
+        }
+
+        .task.completed .complete-btn {
+            background: #bda8cf;
+            color: white;
+        }
+
+        /* Empty */
+        .rest-day {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 25px;
+            color: #88798a;
+        }
+
+        .rest-day .emoji {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translate(-50%, 100px);
+            background: #66546a;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 30px;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 650px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .days {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .task {
+                flex-wrap: wrap;
+            }
+
+            .time {
+                width: 100%;
+            }
+
+            .complete-btn {
+                width: 100%;
+            }
+
+            .penda {
+                width: 70px;
+                height: 70px;
+                min-width: 70px;
+                font-size: 38px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header>
+            <h1>☁️ Penda's Lofi Schedule ♡</h1>
+            <p>Study a little. Rest a little. Keep going. 🌷</p>
+        </header>
+
+        <!-- Penda -->
+        <section class="penda-card">
+            <div class="penda" id="penda">🐼</div>
+
+            <div class="message">
+                <h2 id="pendaTitle">Hi! I'm Penda ♡</h2>
+                <p id="pendaMessage">Let's make today productive together!</p>
+            </div>
+        </section>
+
+        <!-- Days -->
+        <div class="days" id="days"></div>
+
+        <!-- Progress -->
+        <section class="progress-card">
+            <div class="progress-top">
+                <span>Today's Progress ♡</span>
+                <span id="progressText">0 / 0</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </section>
+
+        <!-- Schedule -->
+        <section class="schedule" id="schedule"></section>
+
+    </div>
+
+    <div class="toast" id="toast">
+        Yay! Task completed! ♡
+    </div>
+
+
+    <script>
+
+        /*
+          =====================================
+          YOUR WEEKLY SCHEDULE
+          =====================================
+        */
+
+        const schedule = {
+
+            Monday: [
+                {
+                    time: "11:00 AM",
+                    name: "Java Self-Learning",
+                    description: "Learn Java from YouTube"
+                },
+                {
+                    time: "1:30 PM – 5:30 PM",
+                    name: "University",
+                    description: "Attend university classes"
+                },
+                {
+                    time: "7:00 PM",
+                    name: "Project / Assignment",
+                    description: "Work on university projects"
+                },
+                {
+                    time: "9:00 PM",
+                    name: "Python Online Study",
+                    description: "Python study / online meeting"
+                }
+            ],
+
+            Tuesday: [
+                {
+                    time: "11:00 AM",
+                    name: "Java Self-Learning",
+                    description: "Learn Java from YouTube"
+                },
+                {
+                    time: "1:30 PM – 5:30 PM",
+                    name: "University",
+                    description: "Attend university classes"
+                },
+                {
+                    time: "7:00 PM",
+                    name: "Project / Assignment",
+                    description: "Work on university projects"
+                },
+                {
+                    time: "9:00 PM",
+                    name: "Python Online Study",
+                    description: "Python study / online meeting"
+                }
+            ],
+
+            Wednesday: [
+                {
+                    time: "11:00 AM",
+                    name: "Java Self-Learning",
+                    description: "Learn Java from YouTube"
+                },
+                {
+                    time: "1:30 PM – 5:30 PM",
+                    name: "University",
+                    description: "Attend university classes"
+                },
+                {
+                    time: "7:00 PM",
+                    name: "Project / Assignment",
+                    description: "Work on university projects"
+                },
+                {
+                    time: "9:00 PM",
+                    name: "Python Online Study",
+                    description: "Python study / online meeting"
+                }
+            ],
+
+            Thursday: [
+                {
+                    time: "11:00 AM",
+                    name: "Java Self-Learning",
+                    description: "Learn Java from YouTube"
+                },
+                {
+                    time: "1:30 PM – 5:30 PM",
+                    name: "University",
+                    description: "Attend university classes"
+                },
+                {
+                    time: "7:00 PM",
+                    name: "Project / Assignment",
+                    description: "Work on university projects"
+                },
+                {
+                    time: "9:00 PM",
+                    name: "Python Online Study",
+                    description: "Python study / online meeting"
+                }
+            ],
+
+            Friday: [
+                {
+                    time: "11:00 AM",
+                    name: "Java Self-Learning",
+                    description: "Learn Java from YouTube"
+                },
+                {
+                    time: "1:30 PM – 5:30 PM",
+                    name: "University",
+                    description: "Attend university classes"
+                },
+                {
+                    time: "7:00 PM",
+                    name: "Project / Assignment",
+                    description: "Work on university projects"
+                },
+                {
+                    time: "9:00 PM",
+                    name: "Python Online Study",
+                    description: "Python study / online meeting"
+                }
+            ],
+
+            Saturday: [
+                {
+                    time: "11:00 AM",
+                    name: "Java Self-Learning",
+                    description: "Learn Java from YouTube"
+                },
+                {
+                    time: "1:30 PM – 5:30 PM",
+                    name: "University",
+                    description: "Attend university classes"
+                },
+                {
+                    time: "7:00 PM",
+                    name: "Project / Assignment",
+                    description: "Work on university projects"
+                },
+                {
+                    time: "9:00 PM",
+                    name: "Python Online Study",
+                    description: "Python study / online meeting"
+                }
+            ],
+
+            Sunday: []
+
+        };
+
+
+        /*
+          =====================================
+          APP LOGIC
+          =====================================
+        */
+
+        const daysContainer = document.getElementById("days");
+        const scheduleContainer = document.getElementById("schedule");
+
+        const progressText = document.getElementById("progressText");
+        const progressFill = document.getElementById("progressFill");
+
+        const penda = document.getElementById("penda");
+        const pendaTitle = document.getElementById("pendaTitle");
+        const pendaMessage = document.getElementById("pendaMessage");
+
+        const toast = document.getElementById("toast");
+
+        const days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ];
+
+        let selectedDay = getCurrentDay();
+
+
+        /*
+          Get current day
+        */
+
+        function getCurrentDay() {
+
+            const today = new Date().getDay();
+
+            const names = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+            ];
+
+            return names[today];
+
+        }
+
+
+        /*
+          Create day buttons
+        */
+
+        function renderDays() {
+
+            daysContainer.innerHTML = "";
+
+            days.forEach(day => {
+
+                const button = document.createElement("button");
+
+                button.className = "day-btn";
+
+                if (day === selectedDay) {
+                    button.classList.add("active");
+                }
+
+                button.textContent = day.slice(0, 3);
+
+                button.onclick = () => {
+
+                    selectedDay = day;
+
+                    renderDays();
+                    renderSchedule();
+
+                };
+
+                daysContainer.appendChild(button);
+
+            });
+
+        }
+
+
+        /*
+          Storage key
+        */
+
+        function getStorageKey(day, index) {
+
+            return `penda-schedule-${day}-${index}`;
+
+        }
+
+
+        /*
+          Check if task is complete
+        */
+
+        function isCompleted(day, index) {
+
+            return localStorage.getItem(
+                getStorageKey(day, index)
+            ) === "yes";
+
+        }
+
+
+        /*
+          Toggle task
+        */
+
+        function toggleTask(index) {
+
+            const key = getStorageKey(selectedDay, index);
+
+            const currentlyCompleted =
+                localStorage.getItem(key) === "yes";
+
+
+            if (currentlyCompleted) {
+                localStorage.removeItem(key);
+
+                penda.textContent = "🐼";
+                pendaTitle.textContent = "Let's keep going ♡";
+                pendaMessage.textContent =
+                    "You can complete it again later!";
+
+            } else {
+
+                localStorage.setItem(key, "yes");
+
+                celebrate();
+
+            }
+
+
+            renderSchedule();
+
+        }
+
+
+        /*
+          Celebration
+        */
+
+        function celebrate() {
+
+            penda.textContent = "🥳";
+
+            pendaTitle.textContent = "Yay! You did it! ♡";
+
+            pendaMessage.textContent =
+                "Penda is proud of you! Keep going! 🌷";
+
+            penda.classList.remove("happy");
+
+            void penda.offsetWidth;
+
+            penda.classList.add("happy");
+
+            toast.classList.add("show");
+
+            setTimeout(() => {
+
+                toast.classList.remove("show");
+
+            }, 1800);
+
+        }
+
+
+        /*
+          Render schedule
+        */
+
+        function renderSchedule() {
+
+            scheduleContainer.innerHTML = "";
+
+            const tasks = schedule[selectedDay];
+
+
+            if (tasks.length === 0) {
+
+                scheduleContainer.innerHTML = `
+        <div class="rest-day">
+          <div class="emoji">🌙</div>
+          <h2>Sunday is your rest day ♡</h2>
+          <p>Relax, recharge, and get ready for a new week.</p>
+        </div>
+      `;
+
+                updateProgress();
+
+                return;
+
+            }
+
+
+            tasks.forEach((task, index) => {
+
+                const completed =
+                    isCompleted(selectedDay, index);
+
+
+                const taskElement =
+                    document.createElement("div");
+
+
+                taskElement.className = "task";
+
+                if (completed) {
+
+                    taskElement.classList.add("completed");
+
+                }
+
+
+                taskElement.innerHTML = `
+
+        <div class="time">
+          ${task.time}
+        </div>
+
+        <div class="task-info">
+
+          <div class="task-name">
+            ${task.name}
+          </div>
+
+          <div class="task-description">
+            ${task.description}
+          </div>
+
+        </div>
+
+        <button class="complete-btn">
+
+          ${completed ? "✓ Completed" : "Complete"}
+
+        </button>
+
+      `;
+
+
+                taskElement
+                    .querySelector(".complete-btn")
+                    .onclick = () => toggleTask(index);
+
+
+                scheduleContainer.appendChild(taskElement);
+
+            });
+
+
+            updateProgress();
+
+        }
+
+
+        /*
+          Progress
+        */
+
+        function updateProgress() {
+
+            const tasks = schedule[selectedDay];
+
+            const total = tasks.length;
+
+            const completed =
+                tasks.filter(
+                    (_, index) =>
+                        isCompleted(selectedDay, index)
+                ).length;
+
+
+            progressText.textContent = `${completed} / ${total}`;
+
+            const percentage =
+                total === 0
+                    ? 0
+                    : (completed / total) * 100;
+
+            progressFill.style.width = `${percentage}%`;
+
+
+            if (total > 0 && completed === total) {
+
+                penda.textContent = "🥰";
+
+                pendaTitle.textContent =
+                    "Perfect! You finished everything! ♡";
+
+                pendaMessage.textContent =
+                    "Penda is super proud of you! 🌸";
+
+            }
+
+        }
+
+
+        /*
+          Start app
+        */
+
+        renderDays();
+        renderSchedule();
+
+    </script>
+
+</body>
+
+</html>
